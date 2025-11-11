@@ -1,0 +1,12 @@
+{
+  "name": "trabalho-final",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "node --watch src/server.ts"
+  },
+  "keywords": [],
+  "author": "Airton e Gabriel",
+  "license": "ISC"
+}
