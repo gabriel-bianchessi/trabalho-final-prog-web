@@ -2,7 +2,6 @@ import "dotenv/config";
 import { PrismaClient } from "../../generated/prisma";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
-// Extrair credenciais da DATABASE_URL
 const dbUrl = new URL(process.env.DATABASE_URL || "");
 
 const adapter = new PrismaMariaDb({

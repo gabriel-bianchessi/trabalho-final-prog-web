@@ -5,7 +5,9 @@
   "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "importar-dados": "tsx importar-dados.ts",
+    "migrate": "prisma migrate dev --"
   },
   "keywords": [],
   "author": "Airton e Gabriel",

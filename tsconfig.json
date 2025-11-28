@@ -1,6 +1,16 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "types": [],
+    "noEmit": true, // Optional - see note below
+    "target": "esnext",
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
     "sourceMap": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
     "outDir": "dist",
     "strict": true,
     "lib": [
