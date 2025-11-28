@@ -3,7 +3,7 @@ import { PedidosRepository } from "../application/repositories/PedidosRepository
 import { ProdutosRepository } from "../application/repositories/ProdutosRepository";
 import { CriarPedidoUseCase } from "../application/use_cases/CriarPedidoUseCase";
 import { ListarPedidosUseCase } from "../application/use_cases/ListarPedidosUseCase";
-import { AuthenticatedRequest } from "../middlewares/authMiddleware";
+import type { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
 export class PedidosController {
   static async criar(request: AuthenticatedRequest, response: Response, next: NextFunction) {

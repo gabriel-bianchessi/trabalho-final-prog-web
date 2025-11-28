@@ -6,16 +6,22 @@ import { ValidarEstoqueUseCase } from "../application/use_cases/ValidarEstoqueUs
 import { ProdutosRepository } from "../application/repositories/ProdutosRepository";
 
 export class ProdutosController {
-  static async listar(request: Request, response: Response, next: NextFunction) {
+  static async listar(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
       const { categoria, titulo } = request.query;
 
       const produtosRepository = new ProdutosRepository();
-      const listarProdutosUseCase = new ListarProdutosUseCase(produtosRepository);
+      const listarProdutosUseCase = new ListarProdutosUseCase(
+        produtosRepository,
+      );
 
       const produtos = await listarProdutosUseCase.execute({
         categoria: categoria as string,
-        titulo: titulo as string
+        titulo: titulo as string,
       });
 
       return response.status(200).json(produtos);
@@ -24,47 +30,65 @@ export class ProdutosController {
     }
   }
 
-  static async popularProdutos(request: Request, response: Response, next: NextFunction) {
+  static async popularProdutos(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
       const produtosRepository = new ProdutosRepository();
-      const popularProdutosUseCase = new PopularProdutosUseCase(produtosRepository);
-      
+      const popularProdutosUseCase = new PopularProdutosUseCase(
+        produtosRepository,
+      );
+
       const resultado = await popularProdutosUseCase.execute();
-      
+
       return response.status(200).json({
         message: "Produtos populados com sucesso",
-        resultado
+        resultado,
       });
     } catch (err) {
       next(err);
     }
   }
 
-  static async detalharProduto(request: Request, response: Response, next: NextFunction) {
+  static async detalharProduto(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
       const { id } = request.params;
       const produtosRepository = new ProdutosRepository();
-      const detalharProdutoUseCase = new DetalharProdutoUseCase(produtosRepository);
-      
+      const detalharProdutoUseCase = new DetalharProdutoUseCase(
+        produtosRepository,
+      );
+
       const produto = await detalharProdutoUseCase.execute(Number(id));
-      
+
       return response.status(200).json(produto);
     } catch (err) {
       next(err);
     }
   }
 
-  static async validarEstoque(request: Request, response: Response, next: NextFunction) {
+  static async validarEstoque(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) {
     try {
       const { id } = request.params;
       const { quantidade } = request.body;
 
       const produtosRepository = new ProdutosRepository();
-      const validarEstoqueUseCase = new ValidarEstoqueUseCase(produtosRepository);
+      const validarEstoqueUseCase = new ValidarEstoqueUseCase(
+        produtosRepository,
+      );
 
       const resultado = await validarEstoqueUseCase.execute({
         produtoId: Number(id),
-        quantidade: Number(quantidade)
+        quantidade: Number(quantidade),
       });
 
       return response.status(200).json(resultado);

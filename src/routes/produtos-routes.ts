@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
-import { ProdutosController } from "../controllers/ProdutosController";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { ProdutosController } from '../controllers/ProdutosController copy';
 
 const router: IRouter = Router();
 
