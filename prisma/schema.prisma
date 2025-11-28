@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -53,6 +53,7 @@ model Cliente {
   data_nasc DateTime @db.Date
   documento String   @unique @db.VarChar(30)
   email     String   @unique @db.VarChar(255)
+  senha     String   @db.VarChar(255)
 
   ativo Boolean @default(true) @db.UnsignedTinyInt
 
