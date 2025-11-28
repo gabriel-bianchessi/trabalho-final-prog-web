@@ -1,9 +1,11 @@
 import { ProductsService } from '../services/products-service.js';
+import { CategoriesService } from '../services/categories-service.js';
 
 (() => {
     "use strict";
 
     const productsService = new ProductsService();
+    const categoriesService = new CategoriesService();
     const produtosContainer = document.getElementById('products-container');
     const categoriasContainer = document.getElementById('categories-container');
     const buscaInput = document.getElementById('search-input');
@@ -42,7 +44,7 @@ import { ProductsService } from '../services/products-service.js';
     }
 
     function loadCategories() {
-        productsService.getCategories()
+        categoriesService.getAllCategories()
             .then(data => {
                 categorias = [...data];
                 renderizarCategorias();

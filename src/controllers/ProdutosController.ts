@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { PopularProdutosUseCase } from "../application/use_cases/PopularProdutosUseCase";
+import { ProdutosRepository } from "../application/repositories/ProdutosRepository";
 import { DetalharProdutoUseCase } from "../application/use_cases/DetalharProdutoUseCase";
 import { ListarProdutosUseCase } from "../application/use_cases/ListarProdutosUseCase";
+import { PopularProdutosUseCase } from "../application/use_cases/PopularProdutosUseCase";
 import { ValidarEstoqueUseCase } from "../application/use_cases/ValidarEstoqueUseCase";
-import { ProdutosRepository } from "../application/repositories/ProdutosRepository";
 
 export class ProdutosController {
   static async listar(

@@ -1,6 +1,6 @@
 export class ProductsService {
     constructor() {
-        this.baseUrl = 'http://localhost:3000';
+        this.baseUrl = 'http://localhost:3000/api';
     }
 
     getAllProducts() {
@@ -16,21 +16,6 @@ export class ProductsService {
                 throw error;
             });
 
-        return retorno;
-    }
-
-    getCategories() {
-        const retorno = fetch(`${this.baseUrl}/produtos/categories`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar categorias');
-                }
-                return response.json();
-            })
-            .catch(error => {
-                console.error('Erro ao buscar categorias:', error);
-                throw error;
-            });
         return retorno;
     }
 

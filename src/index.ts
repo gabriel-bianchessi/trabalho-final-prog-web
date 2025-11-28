@@ -4,13 +4,14 @@ import categoriasRoutes from "./routes/categorias-routes";
 import clientesRoutes from "./routes/clientes-routes";
 import pedidosRoutes from "./routes/pedidos-routes";
 import produtosRoutes from "./routes/produtos-routes";
+import cors from 'cors';
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
 app.use(express.json());
-
+app.use(cors())
 app.get("/api/health", (request: Request, response: Response) => {
   return response.status(200).send({
     message: "All ok",
