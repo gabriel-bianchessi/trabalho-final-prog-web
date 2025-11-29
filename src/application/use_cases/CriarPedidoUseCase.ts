@@ -2,8 +2,7 @@ import { PedidosRepository } from "../repositories/PedidosRepository";
 import { ProdutosRepository } from "../repositories/ProdutosRepository";
 import { EstoqueInsuficienteError } from "../errors/EstoqueInsuficienteError";
 import { ProdutoNotFoundError } from "../errors/ProdutoNotFoundError";
-import { MeiosPagamento } from "../../generated/prisma";
-// import { MeiosPagamento } from "../../generated/prisma/";
+import { MeiosPagamento } from "../../generated/prisma/";
 
 interface ItemPedido {
   id_produto: number;
