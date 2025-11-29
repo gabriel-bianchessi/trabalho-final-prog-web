@@ -6,6 +6,7 @@ interface CreateProdutoData {
   preco: number;
   imagem_url: string;
   quantidade: number;
+  descricao: string;
 }
 
 export class ProdutosRepository {
@@ -67,7 +68,8 @@ export class ProdutosRepository {
         titulo: data.titulo,
         preco: data.preco,
         imagem_url: data.imagem_url,
-        quantidade: data.quantidade
+        quantidade: data.quantidade,
+        descricao: data.descricao
       }
     });
   }

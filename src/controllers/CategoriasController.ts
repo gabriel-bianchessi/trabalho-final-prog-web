@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { CategoriasRepository } from "../application/repositories/CategoriasRepository";
-import { ListarCategoriasUseCase } from "../application/use_cases/ListarPedidosUseCase copy";
+import { ListarCategoriasUseCase } from '../application/use_cases/ListarCategoriasUseCase';
 
 export class CategoriasController {
   static async listar(

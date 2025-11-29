@@ -40,7 +40,8 @@ export class PopularProdutosUseCase {
             titulo: product.title,
             preco: product.price,
             imagem_url: product.image,
-            quantidade: 1
+            quantidade: 1,
+            descricao: product.image
           });
           results.criados++;
 

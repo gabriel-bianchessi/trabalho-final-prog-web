@@ -3,21 +3,25 @@ export class ProductsService {
         this.baseUrl = 'http://localhost:3000/api';
     }
 
-    getAllProducts() {
-        const retorno = fetch(`${this.baseUrl}/produtos`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar produtos');
-                }
-                return response.json();
-            })
-            .catch(error => {
-                console.error('Erro ao buscar produtos:', error);
-                throw error;
-            });
+    /**
+     * @typedef {import('../../../generated/prisma/index.d.ts').Produto} Produto
+     * @type Promise<Produto[]>
+    */
+    async getAllProducts() {
+        try {
+            const response = await fetch(`${this.baseUrl}/produtos`);
 
-        return retorno;
+            if (!response.ok) {
+                throw new Error('Erro ao carregar produtos');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+            throw error;
+        }
     }
+
 
     getProductsByCategory(category) {
         const retorno = fetch(`${this.baseUrl}/products/category/${category}`)

@@ -1,3 +1,4 @@
+import type { Categoria } from '../../generated/prisma';
 import { ProdutosRepository } from "../repositories/ProdutosRepository";
 
 interface ListarProdutosInput {
@@ -17,6 +18,7 @@ export class ListarProdutosUseCase {
       preco: produto.preco,
       imagem_url: produto.imagem_url,
       estoque_atual: produto.quantidade,
+      descricao: produto.descricao,
       categorias: produto.categoriaDeProduto.map(cp => cp.categoria.titulo)
     }));
   }

@@ -1,7 +1,8 @@
-import { ProductsService } from '../services/products-service.js';
 import { CategoriesService } from '../services/categories-service.js';
+import { ProductsService } from '../services/products-service.js';
 
-(() => {
+
+(async () => {
     "use strict";
 
     const productsService = new ProductsService();
@@ -14,63 +15,77 @@ import { CategoriesService } from '../services/categories-service.js';
     const templateProduto = document.getElementById('product-template');
 
     /**
-     * @type {import('../models/product.js').Product[]}
-     */
+     * @type { {id: number; titulo: string; preco: number; imagem_url: string; estoque_atual: number; categorias: string[]} }[]
+    */
     let produtos = [];
     /**
-     * @type {string[]}
-     */
+     * @typedef {import('../../../generated/prisma/index.d.ts').Categoria} Categoria
+     * @type Categoria[]
+    */
     let categorias = [];
+    /**
+     * @typedef {import('../models/produto.d.ts').Produto} Produto
+     * @type Produto[]
+    */
     let produtosFiltrados = [];
+    /**
+     * @typedef {import('../models/produto.d.ts').Produto} Produto
+     * @type Produto[]
+    */
     let categoriaAtiva = null;
     let busca = '';
 
-    loadAllData();
-    loadCategories();
+    await loadAllData();
+    await loadCategories();
     configureEventListeners();
 
-    function loadAllData() {
-        productsService.getAllProducts()
-            .then(data => {
-                produtos = data;
-                produtosFiltrados = [...produtos];
-                renderizarProdutos();
-                escondeStatus();
-            })
-            .catch(error => {
-                mostrarMensagemErro('Erro ao carregar produtos. Tente novamente mais tarde.', 'danger');
-                console.error('Erro ao carregar produtos:', error);
-            });
+    async function loadAllData() {
+        try {
+            const data = await productsService.getAllProducts();
+
+            produtos = data;
+            produtosFiltrados = [...produtos];
+
+            renderizarProdutos();
+            escondeStatus();
+        } catch (error) {
+            mostrarMensagemErro('Erro ao carregar produtos. Tente novamente mais tarde.', 'danger');
+            console.error('Erro ao carregar produtos:', error);
+        }
     }
 
-    function loadCategories() {
-        categoriesService.getAllCategories()
-            .then(data => {
-                categorias = [...data];
-                renderizarCategorias();
-                escondeStatus();
-            })
-            .catch(error => {
-                mostrarMensagemErro('Erro ao carregar categorias. Tente novamente mais tarde.', 'danger');
-                console.error('Erro ao carregar categorias:', error);
-            });
+
+    async function loadCategories() {
+        try {
+            const response = await categoriesService.getAllCategories();
+            categorias = response;
+            renderizarCategorias();
+        }
+        catch {
+            mostrarMensagemErro('Erro ao carregar categorias. Tente novamente mais tarde.', 'danger');
+            console.error('Erro ao carregar categorias:', error);
+        }
     }
 
     function aplicaFiltro() {
+        /**
+         * @typedef {import('../models/produto.d.ts').Produto} Produto
+         * @type Produto[]
+        */
         let result = [...produtos];
 
         if (categoriaAtiva) {
             result = result.filter(product =>
-                product.category === categoriaAtiva
+                product.categorias.includes(categoriaAtiva.titulo)
             );
         }
 
         if (busca) {
             const termo = busca.toLowerCase();
             result = result.filter(product => {
-                const titleMatch = product.title.toLowerCase().includes(termo);
-                const descriptionMatch = product.description.toLowerCase().includes(termo);
-                return titleMatch || descriptionMatch;
+                const titleMatch = product.titulo.toLowerCase().includes(termo);
+                const descriptionMatch = product.descricao.toLowerCase().includes(termo);
+                return titleMatch;
             });
         }
 
@@ -84,7 +99,7 @@ import { CategoriesService } from '../services/categories-service.js';
         categorias.forEach(item => {
             const templateBotao = templateCategoria.content.cloneNode(true);
             const elementoBotao = templateBotao.getElementById('category-botao');
-            elementoBotao.textContent = item;
+            elementoBotao.textContent = item.titulo;
             elementoBotao.addEventListener('click', () => {
                 if (categoriaAtiva === item) {
                     categoriaAtiva = null;
@@ -111,19 +126,19 @@ import { CategoriesService } from '../services/categories-service.js';
 
         produtosFiltrados.forEach(produto => {
             const column = templateProduto.content.cloneNode(true);
-            column.getElementById('product-imagem').src = produto.image;
-            column.getElementById('product-titulo').textContent = produto.title;
-            column.getElementById('product-descricao').textContent = produto.description;
-            column.getElementById('product-categoria').textContent = produto.category;
-            column.getElementById('product-preco').textContent = `R$ ${produto.price.toFixed(2)}`;
+            column.getElementById('product-imagem').src = produto.imagem_url;
+            column.getElementById('product-titulo').textContent = produto.titulo;
+            column.getElementById('product-descricao').textContent = produto.descricao;
+            column.getElementById('product-categoria').textContent = produto.categorias[0];
+            column.getElementById('product-preco').textContent = `R$ ${produto.preco}`;
             column.getElementById('produto-carrinho').addEventListener('click', () => {
                 const mensagem = `https://wa.me/2131232?text=Ol%C3%A1%2C%20gostaria%20de%20comprar%20o%20produto%3A%20 ${encodeURIComponent(produto.title)}`;
                 window.location.href = mensagem;
             });
             produtosContainer.appendChild(column);
         });
-
     }
+
     function mensagemSemProdutos() {
         produtosContainer.innerHTML = `sem produtos`;
     }

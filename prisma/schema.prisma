@@ -26,6 +26,7 @@ model Produto {
   titulo     String  @db.VarChar(255)
   preco      Decimal @db.Decimal(10, 2)
   imagem_url String  @db.Text
+  descricao  String  @db.VarChar(1000)             @default("")
   quantidade Int
 
   data_insercao      DateTime             @default(now())

@@ -13,9 +13,10 @@ export class CategoriesService {
         try {
             const response = await fetch(`${this.baseUrl}/categorias`);
             retorno = await response.json();
+            return retorno;
         }
-        catch {
-            return retorno
+        catch (exception){
+            throw exception;
         }
     }
 }
