@@ -1,9 +1,7 @@
+import { CarrinhoService } from '../services/carrinho-service.js';
 import { CategoriesService } from '../services/categories-service.js';
 import { ProductsService } from '../services/products-service.js';
-import { CarrinhoService } from '../services/carrinho-service.js';
-import { CarrinhoToProductDto } from '../dto/carrinho-to-products.js';
 import { toast } from './toast.js';
-
 
 (async () => {
     "use strict";
@@ -32,12 +30,12 @@ import { toast } from './toast.js';
     */
     let categorias = [];
     /**
-     * @typedef {import('../models/produto.d.ts').Produto} Produto
+     * @typedef {import('../types/produto.js').Produto} Produto
      * @type Produto[]
     */
     let produtosFiltrados = [];
     /**
-     * @typedef {import('../models/produto.d.ts').Produto} Produto
+     * @typedef {import('../types/produto.js').Produto} Produto
      * @type Produto[]
     */
     let categoriaAtiva = null;
@@ -78,7 +76,7 @@ import { toast } from './toast.js';
 
     function aplicaFiltro() {
         /**
-         * @typedef {import('../models/produto.d.ts').Produto} Produto
+         * @typedef {import('../types/produto.js').Produto} Produto
          * @type Produto[]
         */
         let result = [...produtos];
@@ -141,13 +139,30 @@ import { toast } from './toast.js';
             column.getElementById('product-categoria').textContent = produto.categorias[0];
             column.getElementById('product-preco').textContent = `R$ ${produto.preco}`;
             column.getElementById('produto-carrinho').addEventListener('click', () => {
+                if (produto.estoque_atual <= 0) {
+                    toast.error("Item indisponível");
+                    return;
+                }
                 carrinhoService.adicionarItem({
                     id: produto.id.toString(),
                     quantidade: 1
                 });
                 atualizarBadgeCarrinho();
+                renderizarProdutos();
                 toast.success('Produto adicionado ao carrinho!');
             });
+            column.getElementById('estoque').textContent = `quantidade disponível: ${produto.estoque_atual}`;
+            column.getElementById('card').addEventListener("click", e => {
+                const card = e.target.closest('.card');
+                if (!card) return;
+
+                const aberto = document.querySelector(".card.zoomed");
+                if (aberto && aberto !== card)
+                    aberto.classList.remove("zoomed");
+
+                card.classList.toggle("zoomed");
+            });
+
             produtosContainer.appendChild(column);
         });
     }

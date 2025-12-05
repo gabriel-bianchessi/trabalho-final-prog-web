@@ -10,7 +10,7 @@ class CarrinhoService {
   _itensCarrinho = null
 
   constructor() {
-    this.recuperarItensLocalSotrage()
+    this.recuperarItensLocalStorage()
   }
 
   /**
@@ -18,13 +18,13 @@ class CarrinhoService {
    */
   get itensCarrinho() {
     if (!this._itensCarrinho) {
-      this.recuperarItensLocalSotrage()
+      this.recuperarItensLocalStorage()
     }
     
     return this._itensCarrinho || []
   }
 
-  recuperarItensLocalSotrage() {
+  recuperarItensLocalStorage() {
     try {
       const items = localStorage.getItem(this.KEY_LOCAL_STORAGE)
 
@@ -49,7 +49,7 @@ class CarrinhoService {
     quantidade = 1
   }) {
     if (!this._itensCarrinho) {
-      this.recuperarItensLocalSotrage()
+      this.recuperarItensLocalStorage()
     }
 
     let carrinho = this._itensCarrinho
@@ -75,7 +75,7 @@ class CarrinhoService {
    */
   removerItem(id) {
     if (!this._itensCarrinho) {
-      this.recuperarItensLocalSotrage()
+      this.recuperarItensLocalStorage()
     }
 
     this._itensCarrinho = this._itensCarrinho.filter(item => item.id !== id)
@@ -88,7 +88,7 @@ class CarrinhoService {
    */
   atualizarQuantidade(id, novaQuantidade) {
     if (!this._itensCarrinho) {
-      this.recuperarItensLocalSotrage()
+      this.recuperarItensLocalStorage()
     }
 
     const item = this._itensCarrinho.find(item => item.id === id)

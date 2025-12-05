@@ -7,6 +7,26 @@ body {
     min-height: 100vh;
 }
 
+.card {
+    transition: transform .25s ease, box-shadow .25s ease;
+    cursor: pointer;
+}
+
+.card.zoomed {
+    transform: scale(1.15);
+    z-index: 1000;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+}
+
+.estoque {
+    display: none;
+}
+
+.card.zoomed .estoque {
+    display: block;
+}
+
 .product-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;

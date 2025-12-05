@@ -1,6 +1,6 @@
-import { ProductsService } from '../services/products-service.js';
-import { CarrinhoService } from '../services/carrinho-service.js';
 import { CarrinhoToProductDto } from '../dto/carrinho-to-products.js';
+import { CarrinhoService } from '../services/carrinho-service.js';
+import { ProductsService } from '../services/products-service.js';
 import { toast } from './toast.js';
 
 (async () => {
@@ -127,7 +127,7 @@ import { toast } from './toast.js';
                                     <strong>+</strong>
                                 </button>
                             </div>
-                            <small class="text-muted">Estoque: ${produto.quantidade}</small>
+                            <small class="text-muted">Estoque: ${produto.estoque_atual}</small>
                         </div>
                         <div class="col-md-2 text-center">
                             <p class="mb-0"><small class="text-muted">Subtotal:</small></p>
@@ -176,7 +176,7 @@ import { toast } from './toast.js';
         const produto = produtos.find(p => p.id === parseInt(id));
         
         if (item && produto) {
-            if (item.quantidade >= produto.quantidade) {
+            if (item.quantidade >= produto.estoque_atual) {
                 toast.warning('Quantidade máxima disponível em estoque atingida!');
                 return;
             }
