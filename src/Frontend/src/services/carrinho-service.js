@@ -103,9 +103,16 @@ class CarrinhoService {
     localStorage.setItem(this.KEY_LOCAL_STORAGE, JSON.stringify([]))
   }
 
+  obterQuantidadePorItem(id) {
+    const quantidade = this._itensCarrinho.find(item => item.id === id).quantidade
+
+    return quantidade || 0
+  }
+
   get totalItens() {
     return this.itensCarrinho.reduce((total, item) => total + item.quantidade, 0)
   }
+
 }
 
 export { CarrinhoService }

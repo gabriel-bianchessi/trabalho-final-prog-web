@@ -139,7 +139,9 @@ import { toast } from './toast.js';
             column.getElementById('product-categoria').textContent = produto.categorias[0];
             column.getElementById('product-preco').textContent = `R$ ${produto.preco}`;
             column.getElementById('produto-carrinho').addEventListener('click', () => {
-                if (produto.estoque_atual <= 0) {
+                const quantidadeNoCarrinho = carrinhoService.obterQuantidadePorItem(produto.id)
+
+                if (produto.estoque_atual - (quantidadeNoCarrinho + 1) <= 0) {
                     toast.error("Item indisponível");
                     return;
                 }
