@@ -6,6 +6,8 @@ import { toast } from './toast.js';
 (async () => {
     "use strict";
 
+    const STORAGE_KEY_USER = '@fake-store-user';
+
     const productsService = new ProductsService();
     const carrinhoService = new CarrinhoService();
     const cartItemsContainer = document.getElementById('cart-items-container');
@@ -17,6 +19,12 @@ import { toast } from './toast.js';
     const checkoutBtn = document.getElementById('checkout-btn');
     const mensagem = document.getElementById('status-message');
     const cartCount = document.getElementById('cart-count');
+    const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+    const confirmCheckoutBtn = document.getElementById('confirm-checkout-btn');
+    const customerEmail = document.getElementById('customer-email');
+    const customerName = document.getElementById('customer-name');
+    const modalTotal = document.getElementById('modal-total');
+    const logoutButton = document.getElementById('logout-button');
 
     /**
      * @type { {id: number; titulo: string; preco: number; imagem_url: string; quantidade: number; categorias: string[]} }[]
@@ -48,8 +56,12 @@ import { toast } from './toast.js';
             }
         });
 
-        checkoutBtn.addEventListener('click', async () => {
-            await finalizarCompra();
+        checkoutBtn.addEventListener('click', () => {
+            abrirModalCheckout();
+        });
+
+        confirmCheckoutBtn.addEventListener('click', async () => {
+            await confirmarPedido();
         });
     }
 
@@ -194,46 +206,104 @@ import { toast } from './toast.js';
         toast.info('Produto removido do carrinho!');
     }
 
-    async function finalizarCompra() {
-        const token = localStorage.getItem('token');
+    function abrirModalCheckout() {
+        const itensCarrinho = carrinhoService.itensCarrinho;
         
-        if (!token) {
-            toast.warning('Você precisa estar logado para finalizar a compra!');
-            setTimeout(() => {
-                // Redirecionar para página de login se existir
-                // window.location.href = 'login.html';
-            }, 2000);
+        if (itensCarrinho.length === 0) {
+            toast.warning('Seu carrinho está vazio!');
             return;
         }
+
+        // Calcular total
+        let total = 0;
+        itensCarrinho.forEach(item => {
+            const produto = produtos.find(p => p.id === parseInt(item.id));
+            if (produto) {
+                const preco = parseFloat(produto.preco);
+                total += preco * item.quantidade;
+            }
+        });
+
+        modalTotal.textContent = `R$ ${total.toFixed(2)}`;
+        
+        // Recuperar email salvo se existir
+        const savedEmail = localStorage.getItem('customer-email');
+        const savedName = localStorage.getItem('customer-name');
+        if (savedEmail) customerEmail.value = savedEmail;
+        if (savedName) customerName.value = savedName;
+        
+        checkoutModal.show();
+    }
+
+    async function confirmarPedido() {
+        const form = document.getElementById('checkout-form');
+        
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const email = customerEmail.value.trim();
+        const name = customerName.value.trim();
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+        // Salvar email e nome para próximas compras
+        localStorage.setItem('customer-email', email);
+        localStorage.setItem('customer-name', name);
 
         const itensCarrinho = carrinhoService.itensCarrinho;
         const produtosParaCompra = CarrinhoToProductDto.parse(itensCarrinho);
 
         try {
-            checkoutBtn.disabled = true;
-            checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
+            confirmCheckoutBtn.disabled = true;
+            confirmCheckoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
 
-            const response = await fetch('http://localhost:3000/pedidos', {
+            const clienteResponse = await fetch('http://localhost:3000/api/clientes/registrar', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ produtos: produtosParaCompra })
+                body: JSON.stringify({
+                    nome: name,
+                    email: email,
+                    documento: `DEMO${Date.now()}`,
+                    data_nasc: '2000-01-01',
+                    senha: 'demo123'
+                })
             });
 
-            if (!response.ok) {
-                const error = await response.json();
+            if (!clienteResponse.ok) {
+                const errorData = await clienteResponse.json();
+                throw new Error(errorData.message || 'Erro ao registrar cliente');
+            }
+
+            const clienteData = await clienteResponse.json();
+
+            const pedidoResponse = await fetch('http://localhost:3000/api/pedidos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    id_cliente: clienteData.id,
+                    produtos: produtosParaCompra,
+                    metodo_pagamento: paymentMethod
+                })
+            });
+
+            if (!pedidoResponse.ok) {
+                const error = await pedidoResponse.json();
                 throw new Error(error.message || 'Erro ao finalizar compra');
             }
 
-            const pedido = await response.json();
+            const pedido = await pedidoResponse.json();
             
             carrinhoService.limparCarrinho();
             renderizarCarrinho();
             atualizarBadgeCarrinho();
+            checkoutModal.hide();
             
-            toast.success(`Pedido #${pedido.id} realizado com sucesso! Total: R$ ${pedido.valor_total.toFixed(2)}`, 5000);
+            toast.success(`Pedido #${pedido.id} realizado com sucesso! Pagamento: ${paymentMethod}`, 5000);
             
             setTimeout(() => {
                 window.location.href = 'index.html';
@@ -243,9 +313,19 @@ import { toast } from './toast.js';
             console.error('Erro ao finalizar compra:', error);
             toast.error(`Erro ao finalizar compra: ${error.message}`);
         } finally {
-            checkoutBtn.disabled = false;
-            checkoutBtn.textContent = 'Finalizar Compra';
+            confirmCheckoutBtn.disabled = false;
+            confirmCheckoutBtn.textContent = 'Confirmar Pedido';
         }
+    }
+
+    // Logout
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem(STORAGE_KEY_USER);
+                toast.info('Você saiu da sua conta');
+            }
+        });
     }
 
 })();

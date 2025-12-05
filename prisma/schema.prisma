@@ -26,7 +26,7 @@ model Produto {
   titulo     String  @db.VarChar(255)
   preco      Decimal @db.Decimal(10, 2)
   imagem_url String  @db.Text
-  descricao  String  @db.VarChar(1000)             @default("")
+  descricao  String  @default("") @db.VarChar(1000)
   quantidade Int
 
   data_insercao      DateTime             @default(now())
@@ -109,6 +109,7 @@ model ItemPedido {
   id         Int     @id @default(autoincrement())
   id_pedido  Int
   id_produto Int
+  quantidade Int     @default(1)
   valor_pago Decimal @db.Decimal(10, 2)
 
   pedido  Pedido  @relation(fields: [id_pedido], references: [id])

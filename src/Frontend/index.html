@@ -13,13 +13,21 @@
     <body>
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
-                <span class="navbar-brand mb-0 h1">🛒 Fake Loja</span>
-                <a href="carrinho.html" class="btn btn-outline-light position-relative">
-                    🛒 Carrinho
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count">
-                        0
-                    </span>
-                </a>
+                <span class="navbar-brand mb-0 h1">🛍️ Fake Loja</span>
+                <div>
+                    <a href="minhas-compras.html" class="btn btn-outline-light me-2">
+                        📦 Minhas Compras
+                    </a>
+                    <a href="carrinho.html" class="btn btn-outline-light position-relative me-2">
+                        🛍️ Carrinho
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-count">
+                            0
+                        </span>
+                    </a>
+                    <button class="btn btn-outline-danger" id="logout-button">
+                        🚺 Sair
+                    </button>
+                </div>
             </div>
         </nav>
         <main class="container-fluid mt-4">

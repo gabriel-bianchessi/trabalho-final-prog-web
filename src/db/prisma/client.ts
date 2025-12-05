@@ -20,6 +20,10 @@ export const prisma = new PrismaClient({
       emit: 'event',
       level: 'query',
     },
+    {
+      emit: 'event',
+      level: 'error',
+    },
   ],
 });
 
@@ -29,4 +33,13 @@ prisma.$on('query', (e: any) => {
   console.log('Params: ' + e.params);
   console.log('Duration: ' + e.duration + 'ms');
   console.log('------------------------------------------------');
+});
+
+prisma.$on('error', (e: any) => {
+  console.log('================================================');
+  console.log('PRISMA ERROR');
+  console.log('Message: ' + e.message);
+  console.log('Target: ' + e.target);
+  console.log('Timestamp: ' + e.timestamp);
+  console.log('================================================');
 });

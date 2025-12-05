@@ -8,6 +8,8 @@ import { toast } from './toast.js';
 (async () => {
     "use strict";
 
+    const STORAGE_KEY_USER = '@fake-store-user';
+
     const productsService = new ProductsService();
     const categoriesService = new CategoriesService();
     const carrinhoService = new CarrinhoService();
@@ -18,6 +20,7 @@ import { toast } from './toast.js';
     const templateCategoria = document.getElementById('category-template');
     const templateProduto = document.getElementById('product-template');
     const cartCount = document.getElementById('cart-count');
+    const logoutButton = document.getElementById('logout-button');
 
     /**
      * @type { {id: number; titulo: string; preco: number; imagem_url: string; estoque_atual: number; categorias: string[]} }[]
@@ -174,5 +177,15 @@ import { toast } from './toast.js';
         const total = carrinhoService.totalItens;
         cartCount.textContent = total;
         cartCount.style.display = total > 0 ? 'inline' : 'none';
+    }
+
+    // Logout
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem(STORAGE_KEY_USER);
+                toast.info('Você saiu da sua conta');
+            }
+        });
     }
 })();

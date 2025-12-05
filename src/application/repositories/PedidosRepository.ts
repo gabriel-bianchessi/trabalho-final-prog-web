@@ -41,6 +41,7 @@ export class PedidosRepository {
           data: {
             id_pedido: pedido.id,
             id_produto: item.id_produto,
+            quantidade: item.quantidade,
             valor_pago: item.valor_pago
           }
         });
