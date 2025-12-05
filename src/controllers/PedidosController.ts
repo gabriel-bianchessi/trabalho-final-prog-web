@@ -9,13 +9,10 @@ export class PedidosController {
     try {
       const { meio_pagamento, metodo_pagamento, itens, produtos, id_cliente } = request.body;
 
-      // Aceitar tanto 'itens' quanto 'produtos' para compatibilidade
       const itensPedido = itens || produtos;
-      
-      // Aceitar tanto 'meio_pagamento' quanto 'metodo_pagamento'
+
       const meioPagamento = meio_pagamento || metodo_pagamento || 'CREDITO';
 
-      // ID do cliente deve vir no body agora
       if (!id_cliente) {
         return response.status(400).json({ message: 'ID do cliente é obrigatório' });
       }
