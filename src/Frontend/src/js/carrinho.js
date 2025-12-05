@@ -214,7 +214,6 @@ import { toast } from './toast.js';
             return;
         }
 
-        // Calcular total
         let total = 0;
         itensCarrinho.forEach(item => {
             const produto = produtos.find(p => p.id === parseInt(item.id));
@@ -226,12 +225,11 @@ import { toast } from './toast.js';
 
         modalTotal.textContent = `R$ ${total.toFixed(2)}`;
         
-        // Recuperar email salvo se existir
         const savedEmail = localStorage.getItem('customer-email');
         const savedName = localStorage.getItem('customer-name');
         if (savedEmail) customerEmail.value = savedEmail;
         if (savedName) customerName.value = savedName;
-        
+
         checkoutModal.show();
     }
 
@@ -247,7 +245,6 @@ import { toast } from './toast.js';
         const name = customerName.value.trim();
         const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
 
-        // Salvar email e nome para próximas compras
         localStorage.setItem('customer-email', email);
         localStorage.setItem('customer-name', name);
 

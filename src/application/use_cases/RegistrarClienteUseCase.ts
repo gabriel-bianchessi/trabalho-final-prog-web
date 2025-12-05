@@ -1,6 +1,6 @@
-import { ClientesRepository } from "../repositories/ClientesRepository";
 import { BcryptHelper } from "../../utils/bcryptHelper";
 import { ClienteAlreadyExistsError } from "../errors/ClienteAlreadyExistsError";
+import { ClientesRepository } from "../repositories/ClientesRepository";
 
 interface RegistrarClienteInput {
   nome: string;
@@ -15,12 +15,11 @@ export class RegistrarClienteUseCase {
 
   async execute(input: RegistrarClienteInput) {
     console.log('Tentando registrar cliente:', { email: input.email, nome: input.nome });
-    
+
     const clienteExistenteEmail = await this.clientesRepository.findByEmail(input.email);
-    
+
     if (clienteExistenteEmail) {
       console.log('Cliente já existe, retornando dados existentes');
-      // Retornar cliente existente ao invés de erro
       return {
         id: clienteExistenteEmail.id,
         nome: clienteExistenteEmail.nome,
@@ -53,7 +52,6 @@ export class RegistrarClienteUseCase {
       };
     } catch (error: any) {
       console.error('Erro ao criar cliente:', error);
-      // Se erro de documento duplicado, verificar novamente e retornar
       if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
         console.log('Erro de duplicação detectado, buscando cliente existente');
         const clienteExistente = await this.clientesRepository.findByEmail(input.email);
