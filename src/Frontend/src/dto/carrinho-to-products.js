@@ -1,18 +1,20 @@
 export class CarrinhoToProductDto {
   /**
    * @typedef {Object} ItemCarrinho
-   * @typedef {import('../models/product.js').Product} produtos
    * @prop {string} ItemCarrinho.id
-   * @prop {string} ItemCarrinho.quantidade
+   * @prop {number} ItemCarrinho.quantidade
+   *
+   * @typedef {Object} ProdutoCarrinho
+   * @prop {number} id_produto
+   * @prop {number} quantidade
    *
    * @param {ItemCarrinho[]} carrinho
-   * @param {import('../models/product.js').Product} produtos 
+   * @returns {ProdutoCarrinho[]}
    */
-  static parse(carrinho, produtos) {
-
-    /**
-     * @type {prod}
-     */
-    const produtosCarrinho = carrinho.reduce([], {});
+  static parse(carrinho) {
+    return carrinho.map(item => ({
+      id_produto: parseInt(item.id),
+      quantidade: item.quantidade
+    }));
   }
 }

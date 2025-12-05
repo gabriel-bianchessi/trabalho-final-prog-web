@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} ItemCarrinho
  * @prop {string} ItemCarrinho.id
- * @prop {string} ItemCarrinho.quantidade
+ * @prop {number} ItemCarrinho.quantidade
  */
 class CarrinhoService {
   KEY_LOCAL_STORAGE = "@fake-store-carrinho"
@@ -21,7 +21,7 @@ class CarrinhoService {
       this.recuperarItensLocalSotrage()
     }
     
-    return this._itensCarrinho
+    return this._itensCarrinho || []
   }
 
   recuperarItensLocalSotrage() {
@@ -33,9 +33,9 @@ class CarrinhoService {
 
       if (parsedItems === null || parsedItems === undefined) {
         this._itensCarrinho = []
+      } else {
+        this._itensCarrinho = parsedItems
       }
-
-      
     } catch (err) {
       this._itensCarrinho = []
     }
@@ -66,8 +66,45 @@ class CarrinhoService {
       }
     }
 
-    localStorage.setItem(this.KEY_LOCAL_STORAGE, carrinho)
+    localStorage.setItem(this.KEY_LOCAL_STORAGE, JSON.stringify(carrinho))
     this._itensCarrinho = carrinho
+  }
+
+  /**
+   * @param {string} id 
+   */
+  removerItem(id) {
+    if (!this._itensCarrinho) {
+      this.recuperarItensLocalSotrage()
+    }
+
+    this._itensCarrinho = this._itensCarrinho.filter(item => item.id !== id)
+    localStorage.setItem(this.KEY_LOCAL_STORAGE, JSON.stringify(this._itensCarrinho))
+  }
+
+  /**
+   * @param {string} id
+   * @param {number} novaQuantidade 
+   */
+  atualizarQuantidade(id, novaQuantidade) {
+    if (!this._itensCarrinho) {
+      this.recuperarItensLocalSotrage()
+    }
+
+    const item = this._itensCarrinho.find(item => item.id === id)
+    if (item) {
+      item.quantidade = novaQuantidade
+      localStorage.setItem(this.KEY_LOCAL_STORAGE, JSON.stringify(this._itensCarrinho))
+    }
+  }
+
+  limparCarrinho() {
+    this._itensCarrinho = []
+    localStorage.setItem(this.KEY_LOCAL_STORAGE, JSON.stringify([]))
+  }
+
+  get totalItens() {
+    return this.itensCarrinho.reduce((total, item) => total + item.quantidade, 0)
   }
 }
 

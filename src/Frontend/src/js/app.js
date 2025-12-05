@@ -1,5 +1,8 @@
 import { CategoriesService } from '../services/categories-service.js';
 import { ProductsService } from '../services/products-service.js';
+import { CarrinhoService } from '../services/carrinho-service.js';
+import { CarrinhoToProductDto } from '../dto/carrinho-to-products.js';
+import { toast } from './toast.js';
 
 
 (async () => {
@@ -7,12 +10,14 @@ import { ProductsService } from '../services/products-service.js';
 
     const productsService = new ProductsService();
     const categoriesService = new CategoriesService();
+    const carrinhoService = new CarrinhoService();
     const produtosContainer = document.getElementById('products-container');
     const categoriasContainer = document.getElementById('categories-container');
     const buscaInput = document.getElementById('search-input');
     const mensagem = document.getElementById('status-message');
     const templateCategoria = document.getElementById('category-template');
     const templateProduto = document.getElementById('product-template');
+    const cartCount = document.getElementById('cart-count');
 
     /**
      * @type { {id: number; titulo: string; preco: number; imagem_url: string; estoque_atual: number; categorias: string[]} }[]
@@ -38,6 +43,7 @@ import { ProductsService } from '../services/products-service.js';
     await loadAllData();
     await loadCategories();
     configureEventListeners();
+    atualizarBadgeCarrinho();
 
     async function loadAllData() {
         try {
@@ -132,8 +138,12 @@ import { ProductsService } from '../services/products-service.js';
             column.getElementById('product-categoria').textContent = produto.categorias[0];
             column.getElementById('product-preco').textContent = `R$ ${produto.preco}`;
             column.getElementById('produto-carrinho').addEventListener('click', () => {
-                const mensagem = `https://wa.me/2131232?text=Ol%C3%A1%2C%20gostaria%20de%20comprar%20o%20produto%3A%20 ${encodeURIComponent(produto.title)}`;
-                window.location.href = mensagem;
+                carrinhoService.adicionarItem({
+                    id: produto.id.toString(),
+                    quantidade: 1
+                });
+                atualizarBadgeCarrinho();
+                toast.success('Produto adicionado ao carrinho!');
             });
             produtosContainer.appendChild(column);
         });
@@ -147,8 +157,7 @@ import { ProductsService } from '../services/products-service.js';
         buscaInput.addEventListener('input', (e) => {
             busca = e.target.value.trim();
             aplicaFiltro();
-        }
-        );
+        });
     }
 
     function mostrarMensagemErro(message, type) {
@@ -159,5 +168,11 @@ import { ProductsService } from '../services/products-service.js';
 
     function escondeStatus() {
         mensagem.classList.add('d-none');
+    }
+
+    function atualizarBadgeCarrinho() {
+        const total = carrinhoService.totalItens;
+        cartCount.textContent = total;
+        cartCount.style.display = total > 0 ? 'inline' : 'none';
     }
 })();
