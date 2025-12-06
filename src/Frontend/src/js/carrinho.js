@@ -224,7 +224,7 @@ import { toast } from './toast.js';
         });
 
         modalTotal.textContent = `R$ ${total.toFixed(2)}`;
-        
+
         const savedEmail = localStorage.getItem('customer-email');
         const savedName = localStorage.getItem('customer-name');
         if (savedEmail) customerEmail.value = savedEmail;

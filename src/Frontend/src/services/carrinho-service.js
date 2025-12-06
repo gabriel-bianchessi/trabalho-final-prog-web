@@ -5,7 +5,7 @@
  */
 class CarrinhoService {
   KEY_LOCAL_STORAGE = "@fake-store-carrinho"
-  
+
   /** @type {ItemCarrinho[] | null} */
   _itensCarrinho = null
 
@@ -20,7 +20,7 @@ class CarrinhoService {
     if (!this._itensCarrinho) {
       this.recuperarItensLocalStorage()
     }
-    
+
     return this._itensCarrinho || []
   }
 
@@ -104,7 +104,12 @@ class CarrinhoService {
   }
 
   obterQuantidadePorItem(id) {
-    const quantidade = this._itensCarrinho.find(item => item.id === id).quantidade
+    if (!this._itensCarrinho) {
+      this.recuperarItensLocalStorage()
+    }
+
+    const quantidade = this._itensCarrinho.find(item => item.id === `${id}`)?.quantidade;
+    console.log(quantidade);
 
     return quantidade || 0
   }
